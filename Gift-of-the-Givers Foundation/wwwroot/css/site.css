@@ -5,6 +5,10 @@
     font-family: 'Poppins', sans-serif;
 }
 
+a{
+    text-decoration: none;
+}
+
 .header {
     position: fixed;
     height: 80px;
@@ -19,19 +23,37 @@
     margin:0 auto;
 }
 
-.nav, .nav_items {
+.nav, .nav_item {
     display: flex;
     height: 100%;
     align-items: center;
     justify-content: space-between;
 }
 
+.nav_logo {
+    font-size: 25px;
+}
+
+.nav_item{
+    column-gap: 25px;
+}
+
+.nav_link:hover {
+    color: #d9d9d9;
+}
+
+
+
+
+
+
+
 .btn_group {
     display: flex;
     gap: 1rem; 
 }
 
-    .btn_group .button {
+.btn_group .button {
         margin: 0; /* reset default margin if any */
         border-radius: 0; /* optional: remove rounded edges between buttons */
-    }
+ }

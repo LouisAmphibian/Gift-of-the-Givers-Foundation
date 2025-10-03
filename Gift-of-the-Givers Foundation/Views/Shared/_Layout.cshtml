@@ -11,13 +11,10 @@
     <header class="header">
         <nav class="nav">
           
-                <a class="nav_logo" asp-area="" asp-controller="Home" asp-action="Index">Gift_of_the_Givers_Foundation</a>
+                <a class="nav_logo" asp-area="" asp-controller="Home" asp-action="Index">GiversFoundation</a>
 
-               
-                  
-               
                     <ul class="nav_items">
-                        <li class="nav-item">
+                        <li class="nav_item">
                             <a class="nav_link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             <a class="nav_link" asp-area="" asp-controller="Home" asp-action="Index">Services</a>
                             <a class="nav_link" asp-area="" asp-controller="Home" asp-action="Index">Contact</a>
@@ -29,17 +26,17 @@
                         <button class="button">SignIn</button>
                     </div>
                    
-
-          
         </nav>
     </header>
 
 
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div>
+        <main role="main">
             @RenderBody()
         </main>
     </div>
+
+
 
     <footer class="border-top footer text-muted">
         <div class="container">
