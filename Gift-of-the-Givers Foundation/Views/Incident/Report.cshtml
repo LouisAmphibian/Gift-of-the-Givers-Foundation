@@ -1,0 +1,89 @@
+﻿@model Gift_of_the_Givers_Foundation.Models.IncidentReport
+
+@{
+    ViewData["Title"] = "Report Incident";
+}
+
+<div class="container mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="text-center mb-0">Report Disaster Incident</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Report" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Title" class="form-label">Incident Title *</label>
+                                    <input asp-for="Title" class="form-control" placeholder="e.g., Flooding in Johannesburg CBD">
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="IncidentType" class="form-label">Incident Type *</label>
+                                    <select asp-for="IncidentType" class="form-select">
+                                        <option value="">Select Type</option>
+                                        <option value="Flood">Flood</option>
+                                        <option value="Fire">Fire</option>
+                                        <option value="Earthquake">Earthquake</option>
+                                        <option value="Storm">Storm</option>
+                                        <option value="Landslide">Landslide</option>
+                                        <option value="Drought">Drought</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <span asp-validation-for="IncidentType" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Location" class="form-label">Location *</label>
+                                    <input asp-for="Location" class="form-control" placeholder="e.g., Johannesburg, Gauteng">
+                                    <span asp-validation-for="Location" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Severity" class="form-label">Severity Level *</label>
+                                    <select asp-for="Severity" class="form-select">
+                                        <option value="">Select Severity</option>
+                                        <option value="Low">Low - Minor impact</option>
+                                        <option value="Medium">Medium - Significant impact</option>
+                                        <option value="High">High - Serious impact</option>
+                                        <option value="Critical">Critical - Emergency situation</option>
+                                    </select>
+                                    <span asp-validation-for="Severity" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Incident Description *</label>
+                            <textarea asp-for="Description" class="form-control" rows="5"
+                                      placeholder="Please provide detailed information about the incident, affected areas, immediate needs, etc."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg">Submit Incident Report</button>
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

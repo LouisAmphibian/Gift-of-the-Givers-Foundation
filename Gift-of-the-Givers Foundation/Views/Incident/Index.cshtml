@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Gift_of_the_Givers_Foundation.Models.IncidentReport>
+
+@{
+    ViewData["Title"] = "Reported Incidents";
+}
+
+<div class="container mt-5 pt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Reported Incidents</h1>
+        <a href="@Url.Action("Report", "Incident")" class="btn btn-danger">
+            <i class="uil uil-plus"></i> Report New Incident
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <h4>No incidents reported yet</h4>
+            <p>Be the first to report a disaster incident in your area.</p>
+            <a href="@Url.Action("Report", "Incident")" class="btn btn-primary">Report Incident</a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var incident in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="badge
+                                        @(incident.Severity == "Critical" ? "bg-danger" :
+                                                                    incident.Severity == "High" ? "bg-warning" :
+                                                                    incident.Severity == "Medium" ? "bg-info" : "bg-success")">
+                        @incident.Severity
+                    </span>
+                    <small class="text-muted">@incident.ReportedDate.ToString("dd MMM yyyy HH:mm")</small>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@incident.Title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        <i class="uil uil-map-marker"></i> @incident.Location
+                    </h6>
+                    <p class="card-text">@incident.Description</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-secondary">@incident.IncidentType</span>
+                        <span class="badge bg-light text-dark">@incident.Status</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">
+                        Reported by: @incident.ReportedByUser?.FirstName @incident.ReportedByUser?.LastName
+                    </small>
+                </div>
+            </div>
+        </div>
+                }
+        </div>
+    }
+</div>
