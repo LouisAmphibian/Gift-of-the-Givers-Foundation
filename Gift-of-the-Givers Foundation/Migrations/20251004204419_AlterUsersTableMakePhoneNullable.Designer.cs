@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gift_of_the_Givers_Foundation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251004183442_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251004204419_AlterUsersTableMakePhoneNullable")]
+    partial class AlterUsersTableMakePhoneNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,7 +34,9 @@ namespace Gift_of_the_Givers_Foundation.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -56,7 +58,6 @@ namespace Gift_of_the_Givers_Foundation.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -66,6 +67,9 @@ namespace Gift_of_the_Givers_Foundation.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("UserID");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

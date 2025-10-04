@@ -6,29 +6,27 @@ namespace Gift_of_the_Givers_Foundation.Models
     {
         public int UserID { get; set; }
 
-        [Required(ErrorMessage = "First name is required")]
-        [StringLength(100, ErrorMessage = "First name cannot exceed 100 characters")]
-        public string FirstName { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string FirstName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Last name is required")]
-        [StringLength(100, ErrorMessage = "Last name cannot exceed 100 characters")]
-        public string LastName { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string LastName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email address")]
-        [StringLength(150, ErrorMessage = "Email cannot exceed 150 characters")]
-        public string Email { get; set; }
+        [Required]
+        [EmailAddress]
+        [StringLength(150)]
+        public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Password is required")]
-        public string PasswordHash { get; set; }
+        [Required]
+        public string PasswordHash { get; set; } = string.Empty;
 
-        [StringLength(20, ErrorMessage = "Phone number cannot exceed 20 characters")]
-        [Phone(ErrorMessage = "Invalid phone number")]
-        public string PhoneNumber { get; set; }
+        [StringLength(20)]
+        public string? PhoneNumber { get; set; } = string.Empty; // Make nullable
 
-        [Required(ErrorMessage = "Role is required")]
-        [StringLength(50, ErrorMessage = "Role cannot exceed 50 characters")]
-        [RegularExpression("^(Donor|Admin|Volunteer)$", ErrorMessage = "Role must be Donor, Admin, or Volunteer")]
+        [Required]
+        [StringLength(50)]
         public string Role { get; set; } = "Donor";
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

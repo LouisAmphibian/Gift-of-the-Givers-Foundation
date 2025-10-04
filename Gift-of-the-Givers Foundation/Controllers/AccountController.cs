@@ -25,14 +25,12 @@ namespace Gift_of_the_Givers_Foundation.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var user = await _userService.AuthenticateUserAsync(email, password);
-            if (user == null)
+            try
             {
-                ViewBag.Error = "Invalid email or password";
-                return View();
-            }
-
-            var claims = new List<Claim>
+                var user = await _userService.AuthenticateUserAsync(email, password);
+                if (user != null)
+                {
+                    var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
@@ -40,12 +38,27 @@ namespace Gift_of_the_Givers_Foundation.Controllers
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            return RedirectToAction("Index", "Home");
+                    HttpContext.Session.SetInt32("UserID", user.UserID);
+                    HttpContext.Session.SetString("UserName", $"{user.FirstName} {user.LastName}");
+                    HttpContext.Session.SetString("UserRole", user.Role);
+
+                    TempData["Success"] = "Login successful!";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                TempData["Error"] = "Invalid email or password";
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Login failed: {ex.Message}";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpGet]
@@ -57,28 +70,56 @@ namespace Gift_of_the_Givers_Foundation.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(string firstName, string lastName, string email, string password, string confirmPassword, string role)
         {
-            if (password != confirmPassword)
+            try
             {
-                ViewBag.Error = "Passwords do not match";
-                return View();
+                if (password != confirmPassword)
+                {
+                    TempData["Error"] = "Passwords do not match";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (await _userService.UserExistsAsync(email))
+                {
+                    TempData["Error"] = "User with this email already exists";
+                    return RedirectToAction("Index", "Home");
+                }
+
+                var user = new User
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Email = email,
+                    Role = role ?? "Donor"
+                };
+
+                var newUser = await _userService.RegisterUserAsync(user, password);
+
+                // Auto-login after registration
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, newUser.UserID.ToString()),
+                    new Claim(ClaimTypes.Email, newUser.Email),
+                    new Claim(ClaimTypes.Name, $"{newUser.FirstName} {newUser.LastName}"),
+                    new Claim(ClaimTypes.Role, newUser.Role)
+                };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                HttpContext.Session.SetInt32("UserID", newUser.UserID);
+                HttpContext.Session.SetString("UserName", $"{newUser.FirstName} {newUser.LastName}");
+                HttpContext.Session.SetString("UserRole", newUser.Role);
+
+                TempData["Success"] = "Registration successful!";
+                return RedirectToAction("Index", "Home");
             }
-
-            if (await _userService.UserExistsAsync(email))
+            catch (Exception ex)
             {
-                ViewBag.Error = "User already exists";
-                return View();
+                TempData["Error"] = $"Registration failed: {ex.Message}";
+                return RedirectToAction("Index", "Home");
             }
-
-            var user = new User
-            {
-                FirstName = firstName,
-                LastName = lastName,
-                Email = email,
-                Role = role ?? "Donor"
-            };
-
-            await _userService.RegisterUserAsync(user, password);
-            return RedirectToAction("Login", "Account");
         }
 
         [HttpPost]
