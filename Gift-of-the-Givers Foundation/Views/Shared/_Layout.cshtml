@@ -11,22 +11,56 @@
 <body>
     <header class="header">
         <nav class="nav">
-          
-                <a class="nav_logo" asp-area="" asp-controller="Home" asp-action="Index">GiversFoundation</a>
+            <a class="nav_logo" asp-controller="Home" asp-action="Index">GiversFoundation</a>
 
-                    <ul class="nav_items">
-                        <li class="nav_item">
-                            <a class="nav_link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            <a class="nav_link" asp-area="" asp-controller="Home" asp-action="Index">Services</a>
-                            <a class="nav_link" asp-area="" asp-controller="Home" asp-action="Index">Contact</a>
-                        </li>
-                    </ul>
-      
-                    <div class="btn_group">
-                        <button class="button" id="form-open-signup">SignUp</button>
-                        <button class="button" id="form-open-login">SignIn</button>
+            <ul class="nav_items">
+                <li class="nav_item">
+                    <a class="nav_link" asp-controller="Home" asp-action="Index">Home</a>
+
+                    @if (Context.Session.GetInt32("UserID") != null)
+                    {
+                        <!-- Logged-in user navigation -->
+                        <a class="nav_link" asp-controller="Incident" asp-action="Index">Report Incidents</a>
+                        <a class="nav_link" asp-controller="Incident" asp-action="Report">New Report</a>
+                        <a class="nav_link" href="#">Donations</a>
+                        <a class="nav_link" href="#">Volunteer</a>
+                    }
+                    else
+                    {
+                        <!-- Public navigation -->
+                        <a class="nav_link" href="#">About Us</a>
+                        <a class="nav_link" href="#">Our Work</a>
+                        <a class="nav_link" href="#">Get Help</a>
+                    }
+                </li>
+            </ul>
+
+            <div class="btn_group">
+                @if (Context.Session.GetInt32("UserID") != null)
+                {
+                    <!-- User is logged in -->
+                    <div class="user-menu" style="display: flex; align-items: center; gap: 15px;">
+                        <span style="color: white;">
+                            <i class="uil uil-user"></i>
+                            @Context.Session.GetString("UserName")
+                        </span>
+                        <span style="color: white; background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 12px; font-size: 12px;">
+                            @Context.Session.GetString("UserRole")
+                        </span>
+                        <form method="post" asp-controller="Account" asp-action="Logout" style="display: inline;">
+                            <button type="submit" class="button" style="background: transparent; border: 1px solid white;">
+                                <i class="uil uil-sign-out-alt"></i> Logout
+                            </button>
+                        </form>
                     </div>
-                   
+                }
+                else
+                {
+                    <!-- User is not logged in -->
+                    <button class="button" id="form-open-signup">SignUp</button>
+                    <button class="button" id="form-open-login">SignIn</button>
+                }
+            </div>
         </nav>
     </header>
 
