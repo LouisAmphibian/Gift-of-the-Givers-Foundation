@@ -186,6 +186,7 @@ a{
 .input_box i.pw_hide{
     right:0;
     font-size: 18px;
+    cursor: pointer;
 }
 
 .option_field {
