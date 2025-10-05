@@ -9,33 +9,36 @@
     <div class="incident-container">
         <i class="uil uil-times form_close" onclick="window.location.href='@Url.Action("Index", "Home")'"></i>
 
+        <!-- Header with Title and Single New Report Button -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 style="color: #0b0217; margin: 0;">Reported Incidents</h2>
-            <a href="@Url.Action("Report", "Incident")" class="button" style="text-decoration: none; display: inline-block; width: auto; padding: 10px 20px;">
-                <i class="uil uil-plus"></i> Report New Incident
+            <a href="@Url.Action("Report", "Incident")" class="new-report-button">
+                <i class="uil uil-plus"></i> New Report
             </a>
         </div>
 
         @if (!Model.Any())
         {
+            <!-- Empty State - No incidents -->
             <div class="text-center py-5">
-                <h4 style="color: #0b0217;">No incidents reported yet</h4>
-                <p style="color: #666;">Be the first to report a disaster incident in your area.</p>
-                <a href="@Url.Action("Report", "Incident")" class="button" style="text-decoration: none; display: inline-block; width: auto; padding: 10px 30px;">
-                    Report Incident
+                <h4 style="color: #0b0217; margin-bottom: 15px;">No incidents reported yet</h4>
+                <p style="color: #666; margin-bottom: 25px;">Be the first to report a disaster incident in your area.</p>
+                <a href="@Url.Action("Report", "Incident")" class="new-report-button" style="padding: 12px 35px;">
+                    <i class="uil uil-plus"></i> Create First Report
                 </a>
             </div>
         }
         else
         {
+            <!-- Incident List -->
             <div class="incident-list">
                 @foreach (var incident in Model)
                 {
                     <div class="incident-card">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span class="badge @(incident.Severity == "Critical" ? "bg-danger" :
-                                                                                    incident.Severity == "High" ? "bg-warning" :
-                                                                                    incident.Severity == "Medium" ? "bg-info" : "bg-success")">
+                                                                        incident.Severity == "High" ? "bg-warning" :
+                                                                        incident.Severity == "Medium" ? "bg-info" : "bg-success")">
                         @incident.Severity
                     </span>
                     <small class="text-muted">@incident.ReportedDate.ToString("dd MMM yyyy HH:mm")</small>

@@ -45,7 +45,8 @@ a {
     column-gap: 25px;
 }
 
-.button {
+/* Base button styles - FIXED for navigation */
+.nav .button {
     padding: 6px 24px;
     border: 2px solid #fff;
     background: transparent;
@@ -53,7 +54,7 @@ a {
     cursor: pointer;
 }
 
-    .button:active {
+    .nav .button:active {
         transform: scale(0.98);
     }
 
@@ -290,7 +291,7 @@ a {
         border-radius: 0;
     }
 
-/* Incident Pages with Better Spacing */
+/* Incident Pages with Better Spacing - FIXED */
 .incident-page {
     position: relative;
     min-height: 100vh;
@@ -298,10 +299,11 @@ a {
     background: url('../images/bg.png') no-repeat center 20%;
     background-size: cover;
     background-attachment: fixed;
-    padding: 120px 20px 50px;
+    padding: 100px 20px 30px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
+    overflow-y: auto;
 }
 
     .incident-page::before {
@@ -321,9 +323,12 @@ a {
     max-width: 500px;
     width: 100%;
     background: #fff;
-    padding: 30px;
+    padding: 30px 25px;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
 }
 
     /* Close button for incident pages */
@@ -342,23 +347,87 @@ a {
             opacity: 1;
         }
 
-    /* Incident Form Styling to Match Login Form */
+    /* BLUE "NEW REPORT" BUTTON STYLING */
+    .incident-container .new-report-button {
+        background: #007bff !important;
+        color: white !important;
+        border: none !important;
+        padding: 12px 25px !important;
+        border-radius: 10px !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 15px !important;
+        text-align: center !important;
+        margin: 0 !important;
+        width: auto !important;
+        gap: 8px !important;
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3) !important;
+    }
+
+        .incident-container .new-report-button:hover {
+            background: #0056b3 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4) !important;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        .incident-container .new-report-button:active {
+            transform: translateY(0) !important;
+            box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3) !important;
+        }
+
+    /* Specific styling for the empty state button */
+    .incident-container .text-center .new-report-button {
+        background: #007bff !important;
+        color: white !important;
+        border: none !important;
+        padding: 14px 40px !important;
+        border-radius: 10px !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 16px !important;
+        gap: 8px !important;
+        box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3) !important;
+    }
+
+        .incident-container .text-center .new-report-button:hover {
+            background: #0056b3 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4) !important;
+            color: white !important;
+        }
+
+    /* Incident Form Styling */
     .incident-container .form {
         width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
 
     .incident-container h2 {
         font-size: 24px;
         text-align: center;
         color: #0b0217;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
     }
 
     .incident-container .input_box {
         position: relative;
-        margin-top: 25px;
+        margin-top: 20px;
         width: 100%;
-        height: 45px;
+        height: auto;
+        min-height: 45px;
     }
 
         .incident-container .input_box input,
@@ -368,20 +437,21 @@ a {
             height: 100%;
             border: none;
             outline: none;
-            padding: 0 30px;
+            padding: 12px 15px;
             color: #333;
             transition: all 0.2s ease;
             border-bottom: 1.5px solid #aaaaaa;
             font-family: 'Poppins', sans-serif;
             background: transparent;
-            font-size: 15px;
+            font-size: 14px;
         }
 
         .incident-container .input_box textarea {
-            padding: 15px 30px;
+            padding: 12px 15px;
             resize: vertical;
             min-height: 120px;
             height: auto;
+            line-height: 1.4;
         }
 
             .incident-container .input_box input:focus,
@@ -390,71 +460,99 @@ a {
                 border-color: #7d2ae8;
             }
 
-    .incident-container .button {
-        background: darkgreen;
-        margin-top: 30px;
-        width: 100%;
-        padding: 12px 0;
-        border-radius: 10px;
-        border: none;
-        color: white;
-        font-size: 17px;
-        cursor: pointer;
-        transition: all 0.3s ease;
+/* Button Container for Proper Spacing - FIXED */
+.button-container {
+    margin-top: 25px;
+    padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* SPECIFIC FIX FOR SUBMIT BUTTON (button element) */
+.incident-container .button[type="submit"],
+.incident-container button.button {
+    background: darkgreen;
+    width: 100%;
+    padding: 12px 0;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    font-size: 17px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 0;
+    position: relative;
+    z-index: 20;
+    font-family: 'Poppins', sans-serif;
+    display: block;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+    .incident-container .button[type="submit"]:hover,
+    .incident-container button.button:hover {
+        background: #006400;
+        transform: scale(1.02);
     }
 
-        .incident-container .button:hover {
-            background: #006400;
-            transform: scale(1.02);
-        }
+    .incident-container .button[type="submit"]:active,
+    .incident-container button.button:active {
+        transform: scale(0.98);
+    }
 
-        .incident-container .button:active {
-            transform: scale(0.98);
-        }
+    .incident-container .button[type="submit"]:disabled,
+    .incident-container button.button:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        transform: none;
+    }
 
-    /* Cancel Button Styling - Red Color */
-    .incident-container .cancel-button {
-        background: #dc3545;
-        margin-top: 15px;
-        width: 100%;
-        padding: 12px 0;
-        border-radius: 10px;
-        border: none;
+/* Cancel Button Styling - Red Color (a tag) */
+.incident-container .cancel-button {
+    background: #dc3545;
+    width: 100%;
+    padding: 12px 0;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    font-size: 17px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    z-index: 15;
+}
+
+    .incident-container .cancel-button:hover {
+        background: #c82333;
+        transform: scale(1.02);
         color: white;
-        font-size: 17px;
-        cursor: pointer;
-        transition: all 0.3s ease;
         text-decoration: none;
-        display: block;
-        text-align: center;
-        font-family: 'Poppins', sans-serif;
     }
 
-        .incident-container .cancel-button:hover {
-            background: #c82333;
-            transform: scale(1.02);
-            color: white;
-            text-decoration: none;
-        }
+    .incident-container .cancel-button:active {
+        transform: scale(0.98);
+    }
 
-        .incident-container .cancel-button:active {
-            transform: scale(0.98);
-        }
+.incident-container .login_signup {
+    font-size: 14px;
+    text-align: center;
+    margin-top: 20px;
+}
 
-    .incident-container .login_signup {
+    .incident-container .login_signup a {
+        color: #7d2ae8;
         font-size: 14px;
-        text-align: center;
-        margin-top: 20px;
     }
 
-        .incident-container .login_signup a {
-            color: #7d2ae8;
-            font-size: 14px;
+        .incident-container .login_signup a:hover {
+            text-decoration: underline;
         }
-
-            .incident-container .login_signup a:hover {
-                text-decoration: underline;
-            }
 
 /* Incident cards styling */
 .incident-card {
@@ -527,5 +625,79 @@ a {
         transform: translateX(-50%) translateY(-20px);
         opacity: 0;
         visibility: hidden;
+    }
+}
+
+/* Ensure textarea doesn't overlap with buttons */
+.incident-container .input_box textarea {
+    position: relative;
+    z-index: 1;
+}
+
+/* Additional button-specific fixes */
+.incident-container form button {
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* Make sure the submit button is always clickable */
+.incident-container .button-container button {
+    pointer-events: auto !important;
+    position: relative;
+}
+
+/* Additional responsive fixes */
+@media (max-height: 700px) {
+    .incident-page {
+        padding: 80px 20px 20px;
+    }
+
+    .incident-container {
+        padding: 20px;
+    }
+
+        .incident-container .input_box textarea {
+            min-height: 100px;
+        }
+
+    .button-container {
+        margin-top: 20px;
+        padding-top: 10px;
+    }
+}
+
+/* Emergency fix - if still having issues */
+.incident-container .button[type="submit"] {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .incident-container {
+        padding: 20px 15px;
+        margin: 10px;
+    }
+
+        .incident-container .new-report-button {
+            padding: 10px 15px !important;
+            font-size: 14px !important;
+        }
+
+        .incident-container .text-center .new-report-button {
+            padding: 12px 25px !important;
+        }
+
+    .foundation-title {
+        font-size: 2.5rem;
+    }
+
+    .foundation-subtitle {
+        font-size: 1.4rem;
+        letter-spacing: 4px;
     }
 }

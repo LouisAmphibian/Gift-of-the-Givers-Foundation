@@ -54,9 +54,11 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
-                <button type="submit" class="button">Submit Report</button>
-
-                <a href="@Url.Action("Index", "Home")" class="cancel-button">Cancel</a>
+                <!-- BUTTON CONTAINER -->
+                <div class="button-container">
+                    <button type="submit" class="button">Submit Report</button>
+                    <a href="@Url.Action("Index", "Home")" class="cancel-button">Cancel</a>
+                </div>
             </form>
         </div>
     </div>
