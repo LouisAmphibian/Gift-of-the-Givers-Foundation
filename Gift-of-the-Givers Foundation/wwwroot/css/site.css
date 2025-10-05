@@ -69,7 +69,7 @@ a {
     background: url('../images/bg.png') no-repeat center center;
     background-size: cover;
     background-attachment: fixed;
-    background-position: center 20%; /* Moves background down */
+    background-position: center 20%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -139,7 +139,7 @@ a {
     pointer-events: none;
     transform: scale(1.1);
     transition: all 0.4s ease-out;
-    margin-top: 30px; /* Added space to push form down from top */
+    margin-top: 30px;
 }
 
 .home.show .form_container {
@@ -265,6 +265,11 @@ a {
     width: 100%;
     padding: 10px 0;
     border-radius: 10px;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .login_signup {
@@ -281,8 +286,8 @@ a {
 }
 
     .btn_group .button {
-        margin: 0; /* reset default margin if any */
-        border-radius: 0; /* optional: remove rounded edges between buttons */
+        margin: 0;
+        border-radius: 0;
     }
 
 /* Incident Pages with Better Spacing */
@@ -299,84 +304,157 @@ a {
     justify-content: center;
 }
 
-.incident-page::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: rgba(0,0,0, 0.6);
-    z-index: 1;
-}
+    .incident-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(0,0,0, 0.6);
+        z-index: 1;
+    }
 
 .incident-container {
     position: relative;
     z-index: 2;
-    max-width: 800px;
+    max-width: 500px;
     width: 100%;
     background: #fff;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    margin: 20px 0;
 }
 
-.incident-form {
-    width: 100%;
-}
-
-    /* Form styling to match your design */
-    .incident-form .input_box {
-        position: relative;
-        margin-top: 20px;
-        width: 100%;
-        height: 40px;
+    /* Close button for incident pages */
+    .incident-container .form_close {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        color: #0b0217;
+        font-size: 22px;
+        opacity: 0.7;
+        cursor: pointer;
+        z-index: 3;
     }
 
-        .incident-form .input_box input,
-        .incident-form .input_box select,
-        .incident-form .input_box textarea {
+        .incident-container .form_close:hover {
+            opacity: 1;
+        }
+
+    /* Incident Form Styling to Match Login Form */
+    .incident-container .form {
+        width: 100%;
+    }
+
+    .incident-container h2 {
+        font-size: 24px;
+        text-align: center;
+        color: #0b0217;
+        margin-bottom: 25px;
+    }
+
+    .incident-container .input_box {
+        position: relative;
+        margin-top: 25px;
+        width: 100%;
+        height: 45px;
+    }
+
+        .incident-container .input_box input,
+        .incident-container .input_box select,
+        .incident-container .input_box textarea {
             width: 100%;
             height: 100%;
             border: none;
             outline: none;
-            padding: 0 15px;
+            padding: 0 30px;
             color: #333;
             transition: all 0.2s ease;
             border-bottom: 1.5px solid #aaaaaa;
             font-family: 'Poppins', sans-serif;
+            background: transparent;
+            font-size: 15px;
         }
 
-        .incident-form .input_box textarea {
-            height: 120px;
-            padding: 15px;
+        .incident-container .input_box textarea {
+            padding: 15px 30px;
             resize: vertical;
+            min-height: 120px;
+            height: auto;
         }
 
-            .incident-form .input_box input:focus,
-            .incident-form .input_box select:focus,
-            .incident-form .input_box textarea:focus {
+            .incident-container .input_box input:focus,
+            .incident-container .input_box select:focus,
+            .incident-container .input_box textarea:focus {
                 border-color: #7d2ae8;
             }
 
-    .incident-form .button {
+    .incident-container .button {
         background: darkgreen;
-        margin-top: 20px;
+        margin-top: 30px;
         width: 100%;
         padding: 12px 0;
         border-radius: 10px;
         border: none;
         color: white;
-        font-size: 16px;
+        font-size: 17px;
         cursor: pointer;
         transition: all 0.3s ease;
     }
 
-        .incident-form .button:hover {
+        .incident-container .button:hover {
             background: #006400;
             transform: scale(1.02);
         }
+
+        .incident-container .button:active {
+            transform: scale(0.98);
+        }
+
+    /* Cancel Button Styling - Red Color */
+    .incident-container .cancel-button {
+        background: #dc3545;
+        margin-top: 15px;
+        width: 100%;
+        padding: 12px 0;
+        border-radius: 10px;
+        border: none;
+        color: white;
+        font-size: 17px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: block;
+        text-align: center;
+        font-family: 'Poppins', sans-serif;
+    }
+
+        .incident-container .cancel-button:hover {
+            background: #c82333;
+            transform: scale(1.02);
+            color: white;
+            text-decoration: none;
+        }
+
+        .incident-container .cancel-button:active {
+            transform: scale(0.98);
+        }
+
+    .incident-container .login_signup {
+        font-size: 14px;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .incident-container .login_signup a {
+            color: #7d2ae8;
+            font-size: 14px;
+        }
+
+            .incident-container .login_signup a:hover {
+                text-decoration: underline;
+            }
 
 /* Incident cards styling */
 .incident-card {
@@ -396,10 +474,10 @@ a {
 /* Alert Styling - Fixed Position */
 .alert {
     position: fixed;
-    top: 90px; /* Position below navbar */
+    top: 90px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 10000; /* Higher than navbar */
+    z-index: 10000;
     max-width: 500px;
     width: 90%;
     padding: 15px 20px;
