@@ -1,120 +1,269 @@
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
+# ==================== TRIGGERS CONFIGURATION ====================
 trigger:
   branches:
     include:
     - main
     - develop
+    - feature/*
   paths:
-    exclude:
-    - README.md
-    - documentation/*
+    include:
+    - '**/*.cs'
+    - '**/*.csproj'
+    - '**/*.sln'
+    - '**/*.cshtml'
+    - 'Controllers/**'
+    - 'Models/**'
+    - 'Views/**'
+    - 'wwwroot/**'
+  batch: true
 
+# ==================== VARIABLES ====================
 variables:
   buildConfiguration: 'Release'
   solution: '**/*.sln'
   projects: '**/*.csproj'
   testProjects: '**/*Tests.csproj'
+  buildPlatform: 'Any CPU'
 
+# ==================== STAGES ====================
 stages:
+
+# STAGE 1: BUILD AND TEST
 - stage: Build
-  displayName: 'Build and Test'
+  displayName: 'Build and Test Stage'
   jobs:
-  - job: Build
-    displayName: 'Build Application'
+  - job: BuildAndTest
+    displayName: 'Build and Test Application'
     pool:
       vmImage: 'windows-latest'
     
     steps:
-    # Step 1: Checkout code
-    - checkout: self
-      displayName: 'Checkout code'
-      clean: true
+    # ========== CODE COMPILATION TASKS ==========
     
-    # Step 2: Install .NET SDK
+    # Task 1: Checkout code
+    - checkout: self
+      displayName: '📥 Checkout source code'
+      clean: true
+      fetchDepth: 1
+    
+    # Task 2: Install .NET SDK
     - task: UseDotNet@2
-      displayName: 'Install .NET SDK'
+      displayName: '🔧 Install .NET 8 SDK'
       inputs:
         packageType: 'sdk'
         version: '8.x'
         includePreviewVersions: false
     
-    # Step 3: Restore NuGet packages
+    # Task 3: Display build information
+    - task: CmdLine@2
+      displayName: 'ℹ️ Build information'
+      inputs:
+        script: |
+          echo "Build Source Branch: $(Build.SourceBranch)"
+          echo "Build Reason: $(Build.Reason)"
+          echo "Build ID: $(Build.BuildId)"
+          dotnet --version
+          dotnet --info
+    
+    # Task 4: Restore NuGet packages
     - task: DotNetCoreCLI@2
-      displayName: 'Restore NuGet packages'
+      displayName: '📦 Restore NuGet packages'
       inputs:
         command: 'restore'
         projects: '$(projects)'
         feedsToUse: 'select'
+        verbosityRestore: 'normal'
     
-    # Step 4: Build solution
+    # Task 5: Build solution
     - task: DotNetCoreCLI@2
-      displayName: 'Build solution'
+      displayName: '🏗️ Build solution'
       inputs:
         command: 'build'
         projects: '$(projects)'
-        arguments: '--configuration $(buildConfiguration) --no-restore'
+        arguments: '--configuration $(buildConfiguration) --no-restore --verbosity normal'
     
-    # Step 5: Run tests (if test projects exist)
+    # ========== TESTING TASKS ==========
+    
+    # Task 6: Create test project if it doesn't exist
+    - task: CmdLine@2
+      displayName: '🛠️ Setup test project'
+      inputs:
+        script: |
+          # Check if test project exists, if not create one
+          if not exist "**/*Tests.csproj" (
+            echo "No test project found. Creating basic test project..."
+            dotnet new xunit -n GiftOfTheGivers.Tests
+            dotnet sln add GiftOfTheGivers.Tests/GiftOfTheGivers.Tests.csproj
+            dotnet add GiftOfTheGivers.Tests/GiftOfTheGivers.Tests.csproj reference $(projects)
+          )
+        workingDirectory: '$(Build.SourcesDirectory)'
+      condition: and(succeeded(), not(exists(variables['testProjects'])))
+    
+    # Task 7: Run unit tests
     - task: DotNetCoreCLI@2
-      displayName: 'Run unit tests'
+      displayName: '🧪 Run unit tests'
       inputs:
         command: 'test'
         projects: '$(testProjects)'
-        arguments: '--configuration $(buildConfiguration) --no-build --verbosity normal'
+        arguments: '--configuration $(buildConfiguration) --no-build --logger "trx" --collect:"XPlat Code Coverage"'
         publishTestResults: true
-      condition: and(succeeded(), ne(variables['testProjects'], ''))
+      condition: succeeded()
     
-    # Step 6: Publish build artifacts
+    # Task 8: Generate test coverage report
+    - task: PublishCodeCoverageResults@1
+      displayName: '📊 Publish code coverage'
+      inputs:
+        codeCoverageTool: 'Cobertura'
+        summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+        reportDirectory: '$(Agent.TempDirectory)/**/'
+      condition: succeeded()
+    
+    # ========== ARTIFACT CREATION ==========
+    
+    # Task 9: Publish application
     - task: DotNetCoreCLI@2
-      displayName: 'Publish application'
+      displayName: '📦 Publish application'
       inputs:
         command: 'publish'
         projects: '$(projects)'
-        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory) --no-build'
-        zipAfterPublish: true
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/publish --no-build'
+        zipAfterPublish: false
+      condition: succeeded()
     
-    # Step 7: Publish artifacts
+    # Task 10: Publish build artifacts
     - task: PublishBuildArtifacts@1
-      displayName: 'Publish build artifacts'
+      displayName: '📤 Publish build artifacts'
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'drop'
+        ArtifactName: 'webapp'
         publishLocation: 'Container'
+      condition: succeeded()
 
+# STAGE 2: DEPLOY TO TEST ENVIRONMENT
 - stage: Deploy_Test
-  displayName: 'Deploy to Test Environment'
+  displayName: '🚀 Deploy to Test Environment'
   dependsOn: Build
-  condition: succeeded()
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  
   jobs:
-  - deployment: DeployTest
+  - deployment: DeployToTest
     displayName: 'Deploy to Test Environment'
-    environment: 'Test'
+    environment: 'GiftOfTheGivers-Test'
     pool:
       vmImage: 'windows-latest'
+    
     strategy:
       runOnce:
         deploy:
           steps:
-          # Download build artifacts
+          # ========== DEPLOYMENT TASKS ==========
+          
+          # Task 1: Download build artifacts
           - download: current
-            artifact: drop
-            displayName: 'Download build artifacts'
+            displayName: '📥 Download build artifacts'
+            artifact: 'webapp'
           
-          # Extract published files
-          - task: ExtractFiles@1
-            displayName: 'Extract published files'
-            inputs:
-              archiveFilePatterns: '$(Pipeline.Workspace)/drop/*.zip'
-              destinationFolder: '$(Pipeline.Workspace)/extracted'
-              cleanDestinationFolder: true
-          
-          # Display success message (replace with actual deployment later)
+          # Task 2: Display deployment info
           - task: CmdLine@2
-            displayName: 'Display deployment info'
+            displayName: 'ℹ️ Deployment information'
             inputs:
               script: |
-                echo "✅ Build completed successfully!"
-                echo "📦 Artifacts are ready for deployment"
-                echo "🚀 Application would be deployed to test environment here"
-                echo "🔧 Next step: Configure Azure App Service deployment"
+                echo "Deploying to Test Environment"
+                echo "Artifact Path: $(Pipeline.Workspace)/webapp"
+                dir "$(Pipeline.Workspace)/webapp"
+          
+          # Task 3: Validate web.config exists
+          - task: CmdLine@2
+            displayName: '✅ Validate deployment package'
+            inputs:
+              script: |
+                if exist "$(Pipeline.Workspace)/webapp/publish/web.config" (
+                  echo "✅ web.config found - Valid ASP.NET Core application"
+                ) else (
+                  echo "❌ web.config not found - Check publish configuration"
+                  exit 1
+                )
+          
+          # Task 4: Deploy to Azure App Service (Test Environment)
+          - task: AzureWebApp@1
+            displayName: '🌐 Deploy to Azure App Service (Test)'
+            inputs:
+              azureSubscription: 'Your-Azure-Service-Connection' # You'll create this
+              appType: 'webApp'
+              appName: 'gift-of-the-givers-test'
+              package: '$(Pipeline.Workspace)/webapp/publish'
+              deploymentMethod: 'auto'
+          
+          # Task 5: Run health check after deployment
+          - task: PowerShell@2
+            displayName: '🏥 Health check validation'
+            inputs:
+              targetType: 'inline'
+              script: |
+                $testUrl = "https://gift-of-the-givers-test.azurewebsites.net"
+                $maxRetries = 10
+                $retryCount = 0
+                $success = $false
+                
+                while ($retryCount -lt $maxRetries -and -not $success) {
+                  try {
+                    Write-Host "Health check attempt $($retryCount + 1)..."
+                    $response = Invoke-WebRequest -Uri $testUrl -Method Get -UseBasicParsing -TimeoutSec 30
+                    if ($response.StatusCode -eq 200) {
+                      $success = $true
+                      Write-Host "✅ Health check PASSED - Application is running"
+                      break
+                    }
+                  } catch {
+                    Write-Host "❌ Health check failed: $($_.Exception.Message)"
+                  }
+                  
+                  $retryCount++
+                  if ($retryCount -lt $maxRetries) {
+                    Start-Sleep -Seconds 10
+                  }
+                }
+                
+                if (-not $success) {
+                  Write-Error "❌ Health check FAILED after $maxRetries attempts"
+                  exit 1
+                }
+          
+          # Task 6: Run smoke tests
+          - task: DotNetCoreCLI@2
+            displayName: '🔍 Run smoke tests'
+            inputs:
+              command: 'test'
+              projects: '$(testProjects)'
+              arguments: '--filter Category=Smoke --logger "trx"'
+              publishTestResults: true
+            condition: succeeded()
+
+# STAGE 3: VALIDATION AND NOTIFICATION
+- stage: Validate
+  displayName: '✅ Validation'
+  dependsOn: Deploy_Test
+  condition: succeeded()
+  
+  jobs:
+  - job: FinalValidation
+    displayName: 'Final validation'
+    pool:
+      vmImage: 'windows-latest'
+    
+    steps:
+    # Task 1: Send success notification
+    - task: CmdLine@2
+      displayName: '📢 Build and deployment successful'
+      inputs:
+        script: |
+          echo "=========================================="
+          echo "✅ PIPELINE EXECUTION COMPLETED SUCCESSFULLY"
+          echo "=========================================="
+          echo "Application: Gift of the Givers Foundation"
+          echo "Build: $(Build.BuildNumber)"
+          echo "Deployed to: Test Environment"
+          echo "Test URL: https://gift-of-the-givers-test.azurewebsites.net"
+          echo "=========================================="
