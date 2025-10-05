@@ -10,8 +10,8 @@ namespace Gift_of_the_Givers_Foundation.Data
         }
 
         public DbSet<User> Users { get; set; }
-
         public DbSet<IncidentReport> IncidentReports { get; set; }
+        public DbSet<Donation> Donations { get; set; } // ADD THIS LINE
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,10 +40,28 @@ namespace Gift_of_the_Givers_Foundation.Data
                 entity.Property(e => e.Status).IsRequired().HasMaxLength(50);
                 entity.Property(e => e.ReportedDate).HasDefaultValueSql("GETUTCDATE()");
 
-                // Relationship with User
                 entity.HasOne(ir => ir.ReportedByUser)
                       .WithMany()
                       .HasForeignKey(ir => ir.ReportedByUserID)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // ADD DONATION CONFIGURATION
+            modelBuilder.Entity<Donation>(entity =>
+            {
+                entity.HasKey(e => e.DonationID);
+                entity.Property(e => e.DonationType).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Description).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Location).IsRequired().HasMaxLength(150);
+                entity.Property(e => e.Unit).HasMaxLength(50);
+                entity.Property(e => e.Urgency).HasMaxLength(20);
+                entity.Property(e => e.SpecialInstructions).HasMaxLength(500);
+                entity.Property(e => e.Status).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.DonationDate).HasDefaultValueSql("GETUTCDATE()");
+
+                entity.HasOne(d => d.DonatedByUser)
+                      .WithMany()
+                      .HasForeignKey(d => d.DonatedByUserID)
                       .OnDelete(DeleteBehavior.Restrict);
             });
         }

@@ -381,7 +381,41 @@ a {
             box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3) !important;
         }
 
-    /* Specific styling for the empty state button */
+    /* GREEN "MAKE DONATION" BUTTON STYLING */
+    .incident-container .new-donation-button {
+        background: #28a745 !important;
+        color: white !important;
+        border: none !important;
+        padding: 12px 25px !important;
+        border-radius: 10px !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 15px !important;
+        text-align: center !important;
+        margin: 0 !important;
+        width: auto !important;
+        gap: 8px !important;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3) !important;
+    }
+
+        .incident-container .new-donation-button:hover {
+            background: #218838 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4) !important;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        .incident-container .new-donation-button:active {
+            transform: translateY(0) !important;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3) !important;
+        }
+
+    /* Specific styling for the empty state buttons */
     .incident-container .text-center .new-report-button {
         background: #007bff !important;
         color: white !important;
@@ -403,6 +437,30 @@ a {
             background: #0056b3 !important;
             transform: translateY(-2px) !important;
             box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4) !important;
+            color: white !important;
+        }
+
+    .incident-container .text-center .new-donation-button {
+        background: #28a745 !important;
+        color: white !important;
+        border: none !important;
+        padding: 14px 40px !important;
+        border-radius: 10px !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 16px !important;
+        gap: 8px !important;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3) !important;
+    }
+
+        .incident-container .text-center .new-donation-button:hover {
+            background: #218838 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4) !important;
             color: white !important;
         }
 
@@ -569,6 +627,22 @@ a {
         transform: translateY(-5px);
     }
 
+/* Donation cards styling */
+.donation-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    border-left: 4px solid #28a745;
+}
+
+    .donation-card:hover {
+        transform: translateY(-5px);
+    }
+
 /* Alert Styling - Fixed Position */
 .alert {
     position: fixed;
@@ -648,6 +722,57 @@ a {
     position: relative;
 }
 
+/* Badge styling for status and types */
+.badge.bg-primary {
+    background-color: #007bff !important;
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.badge.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+/* Admin status update form styling */
+.incident-container .form-select {
+    border: 1px solid #aaaaaa;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.incident-container .btn-outline-primary {
+    border: 1px solid #007bff;
+    color: #007bff;
+    background: transparent;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .incident-container .btn-outline-primary:hover {
+        background: #007bff;
+        color: white;
+    }
+
 /* Additional responsive fixes */
 @media (max-height: 700px) {
     .incident-page {
@@ -683,12 +808,14 @@ a {
         margin: 10px;
     }
 
-        .incident-container .new-report-button {
+        .incident-container .new-report-button,
+        .incident-container .new-donation-button {
             padding: 10px 15px !important;
             font-size: 14px !important;
         }
 
-        .incident-container .text-center .new-report-button {
+        .incident-container .text-center .new-report-button,
+        .incident-container .text-center .new-donation-button {
             padding: 12px 25px !important;
         }
 
@@ -699,5 +826,99 @@ a {
     .foundation-subtitle {
         font-size: 1.4rem;
         letter-spacing: 4px;
+    }
+
+    .d-flex {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+        .d-flex.justify-content-between {
+            justify-content: flex-start !important;
+            align-items: flex-start !important;
+        }
+
+    .incident-container h2 {
+        font-size: 20px;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+    .incident-page {
+        padding: 80px 10px 20px;
+    }
+
+    .incident-container {
+        padding: 15px 12px;
+    }
+
+    .incident-card,
+    .donation-card {
+        padding: 15px;
+    }
+
+    .foundation-title {
+        font-size: 2rem;
+    }
+
+    .foundation-subtitle {
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+    }
+}
+
+/* Animation for smooth transitions */
+.incident-card,
+.donation-card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Focus states for accessibility */
+.incident-container .input_box input:focus,
+.incident-container .input_box select:focus,
+.incident-container .input_box textarea:focus,
+.incident-container .button:focus,
+.incident-container .cancel-button:focus,
+.incident-container .new-report-button:focus,
+.incident-container .new-donation-button:focus {
+    outline: 2px solid #7d2ae8;
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    .incident-page::before {
+        display: none;
+    }
+
+    .incident-container {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .new-report-button,
+    .new-donation-button,
+    .form_close,
+    .cancel-button {
+        display: none !important;
     }
 }

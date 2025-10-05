@@ -1,0 +1,88 @@
+﻿@model Gift_of_the_Givers_Foundation.Models.Donation
+
+@{
+    ViewData["Title"] = "Donate Resources";
+}
+
+<!-- Donation Page with Background -->
+<section class="incident-page">
+    <div class="incident-container">
+        <i class="uil uil-times form_close" onclick="window.location.href='@Url.Action("Index", "Home")'"></i>
+
+        <!-- Donation Form -->
+        <div class="form">
+            <form asp-action="Donate" method="post">
+                <h2>Donate Resources</h2>
+
+                <div class="input_box">
+                    <select asp-for="DonationType" required>
+                        <option value="">Select Donation Type *</option>
+                        <option value="Food">Food Supplies</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Medical">Medical Supplies</option>
+                        <option value="Shelter">Shelter Materials</option>
+                        <option value="Hygiene">Hygiene Kits</option>
+                        <option value="Other">Other Resources</option>
+                    </select>
+                    <span asp-validation-for="DonationType" class="text-danger"></span>
+                </div>
+
+                <div class="input_box">
+                    <input asp-for="Description" type="text" placeholder="Item Description *" required />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="input_box">
+                    <input asp-for="Quantity" type="number" placeholder="Quantity *" min="1" required />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+
+                <div class="input_box">
+                    <select asp-for="Unit">
+                        <option value="">Select Unit</option>
+                        <option value="kg">Kilograms (kg)</option>
+                        <option value="pieces">Pieces</option>
+                        <option value="boxes">Boxes</option>
+                        <option value="liters">Liters</option>
+                        <option value="packs">Packs</option>
+                        <option value="units">Units</option>
+                    </select>
+                    <span asp-validation-for="Unit" class="text-danger"></span>
+                </div>
+
+                <div class="input_box">
+                    <input asp-for="Location" type="text" placeholder="Collection Location *" required />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+
+                <div class="input_box">
+                    <select asp-for="Urgency">
+                        <option value="">Select Urgency Level</option>
+                        <option value="Low">Low - Can wait</option>
+                        <option value="Medium">Medium - Needed soon</option>
+                        <option value="High">High - Urgently needed</option>
+                        <option value="Critical">Critical - Emergency need</option>
+                    </select>
+                    <span asp-validation-for="Urgency" class="text-danger"></span>
+                </div>
+
+                <div class="input_box">
+                    <textarea asp-for="SpecialInstructions" placeholder="Special Instructions (optional)" rows="3"></textarea>
+                    <span asp-validation-for="SpecialInstructions" class="text-danger"></span>
+                </div>
+
+                <!-- BUTTON CONTAINER -->
+                <div class="button-container">
+                    <button type="submit" class="button">Submit Donation</button>
+                    <a href="@Url.Action("Index", "Home")" class="cancel-button">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

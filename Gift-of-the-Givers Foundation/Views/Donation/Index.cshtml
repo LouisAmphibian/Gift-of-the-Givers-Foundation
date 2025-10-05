@@ -1,0 +1,105 @@
+﻿@model IEnumerable<Gift_of_the_Givers_Foundation.Models.Donation>
+
+@{
+    ViewData["Title"] = "Resource Donations";
+}
+
+<!-- Donations Page with Background -->
+<section class="incident-page">
+    <div class="incident-container">
+        <i class="uil uil-times form_close" onclick="window.location.href='@Url.Action("Index", "Home")'"></i>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 style="color: #0b0217; margin: 0;">Resource Donations</h2>
+            <a href="@Url.Action("Donate", "Donation")" class="new-report-button">
+                <i class="uil uil-heart"></i> Make Donation
+            </a>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <h4 style="color: #0b0217; margin-bottom: 15px;">No donations yet</h4>
+                <p style="color: #666; margin-bottom: 25px;">Be the first to donate resources to help those in need.</p>
+                <a href="@Url.Action("Donate", "Donation")" class="new-report-button" style="padding: 12px 35px;">
+                    <i class="uil uil-heart"></i> Make First Donation
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="incident-list">
+                @foreach (var donation in Model)
+                {
+                    <div class="incident-card">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge @(donation.Urgency == "Critical" ? "bg-danger" :
+                                                                        donation.Urgency == "High" ? "bg-warning" :
+                                                                        donation.Urgency == "Medium" ? "bg-info" : "bg-success")">
+                        @(string.IsNullOrEmpty(donation.Urgency) ? "Normal" : donation.Urgency)
+                    </span>
+                    <small class="text-muted">@donation.DonationDate.ToString("dd MMM yyyy HH:mm")</small>
+                </div>
+
+                        <h5 style="color: #0b0217; margin-bottom: 10px;">
+                            <i class="uil @(donation.DonationType == "Food" ? "uil-utensils" :
+                                                                 donation.DonationType == "Medical" ? "uil-medkit" :
+                                                                 donation.DonationType == "Clothing" ? "uil-tshirt" : "uil-gift")"></i>
+                    @donation.DonationType
+                </h5>
+
+                        <h6 style="color: #666; margin-bottom: 10px;">
+                            @donation.Description
+                        </h6>
+
+                        <p style="color: #333; margin-bottom: 10px;">
+                            <strong>Quantity:</strong> @donation.Quantity @donation.Unit
+                        </p>
+
+                        <p style="color: #333; margin-bottom: 15px;">
+                            <strong>Location:</strong> @donation.Location
+                        </p>
+
+                @if (!string.IsNullOrEmpty(donation.SpecialInstructions))
+                        {
+                            <p style="color: #666; margin-bottom: 15px; font-style: italic;">
+                                <strong>Instructions:</strong> @donation.SpecialInstructions
+                            </p>
+                        }
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-primary">@donation.DonationType</span>
+                            <span class="badge @(donation.Status == "Distributed" ? "bg-success" :
+                                                                        donation.Status == "Approved" ? "bg-info" :
+                                                                        donation.Status == "Collected" ? "bg-warning" : "bg-secondary")">
+                        @donation.Status
+                    </span>
+                </div>
+
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                Donated by: @donation.DonatedByUser?.FirstName @donation.DonatedByUser?.LastName
+                            </small>
+                        </div>
+
+                @if (User.IsInRole("Admin"))
+                        {
+                            <div class="mt-3">
+                                <form asp-action="UpdateStatus" method="post" class="d-flex gap-2">
+                                    <input type="hidden" name="id" value="@donation.DonationID" />
+                                    <select name="status" class="form-select form-select-sm" style="width: auto;">
+                                        <option value="Pending">Pending</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Collected">Collected</option>
+                                        <option value="Distributed">Distributed</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">Update</button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

@@ -22,7 +22,9 @@
                         <!-- Logged-in user navigation -->
                         <a class="nav_link" asp-controller="Incident" asp-action="Index">Report Incidents</a>
                         <a class="nav_link" asp-controller="Incident" asp-action="Report">New Report</a>
-                        <a class="nav_link" href="#">Donations</a>
+                        <a class="nav_link" asp-controller="Donation" asp-action="Index">Donations</a>
+
+                        <!-- FIXED THIS LINE -->
                         <a class="nav_link" href="#">Volunteer</a>
                     }
                     else
