@@ -38,7 +38,7 @@ namespace Gift_of_the_Givers_Foundation.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_IncidentReports_ReportedByUserID",
+                name: "IX_IncidentReporn bvs_ReportedByUserID",
                 table: "IncidentReports",
                 column: "ReportedByUserID");
         }

@@ -2,22 +2,9 @@
     ViewData["Title"] = "Home Page";
 }
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["Success"]
-    </div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["Error"]
-    </div>
-}
-
-
 <!--Home-->
 <section class="home">
+    <!-- Login/Signup Form - Centered with proper spacing -->
     <div class="form_container">
         <i class="uil uil-times form_close"></i>
 
@@ -93,12 +80,14 @@
 
                 <button type="submit" class="button">SignUp Now</button>
 
-
                 <div class="login_signup">
                     Already have an account? <a href="#" id="go-login">SignIn</a>
                 </div>
             </form>
         </div>
-
     </div>
 </section>
+
+@section Scripts {
+    <script src="~/js/site.js"></script>
+}

@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - Gift_of_the_Givers_Foundation</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Gift_of_the_Givers_Foundation.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css"
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
 </head>
 <body>
     <header class="header">
@@ -64,6 +64,21 @@
         </nav>
     </header>
 
+    <!-- Alerts Container -->
+    <div id="alertContainer">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success auto-hide">
+                <i class="uil uil-check-circle"></i> @TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger auto-hide">
+                <i class="uil uil-exclamation-triangle"></i> @TempData["Error"]
+            </div>
+        }
+    </div>
 
     <div>
         <main role="main">
@@ -71,16 +86,35 @@
         </main>
     </div>
 
-
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - Gift_of_the_Givers_Foundation - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Auto-hide alerts script -->
+    <script>
+        $(document).ready(function () {
+            // Auto-hide alerts after 3 seconds
+            setTimeout(function () {
+                $('.alert.auto-hide').fadeOut(300, function () {
+                    $(this).remove();
+                });
+            }, 3000);
+
+            // Manual close on click
+            $('.alert').click(function () {
+                $(this).fadeOut(300, function () {
+                    $(this).remove();
+                });
+            });
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
