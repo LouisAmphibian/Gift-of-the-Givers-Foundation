@@ -1,4 +1,9 @@
 # ASP.NET Core
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: 'C:\Users\ayand\source\repos\LouisAmphibian\Gift-of-the-Givers-Foundation\Gift-of-the-Givers Foundation.sln'
+    arguments: '--configuration Release'
 # Build and test ASP.NET Core project targeting .NET Core
 # Add steps that run tests, create a NuGet package, deploy, and more
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
