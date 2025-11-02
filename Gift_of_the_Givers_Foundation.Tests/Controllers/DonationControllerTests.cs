@@ -28,7 +28,7 @@ namespace Gift_of_the_Givers_Foundation.Tests.Controllers
 
             //Mock HttpContext for the controller (controller need HTTP contect)
             var httpContext = new DefaultHttpContext();
-            httpContext.Session= new Mock<ISession>().Object; //Mock session 
+            httpContext.Session= new MockSession(); //Mock session 
             _donationController.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -131,20 +131,29 @@ namespace Gift_of_the_Givers_Foundation.Tests.Controllers
     }
 
     //Mock session class for simulating user sessions in tests
-    public class MockSession : indexer
+    public class MockSession : ISession
     {
         private readonly Dictionary<string, byte[]> _storage = new Dictionary<string, byte[]>();
 
-        public string Id =>  throw new System.NotImplementedException();
-        public bool IsAvailable =>  throw new System.NotImplementedException();
-        public public IEnumerable<string> Keys => _storage.Keys;
+        public string Id => "TestSessionId";
+        public bool IsAvailable => true;
+        public IEnumerable<string> Keys => _storage.Keys;
 
         public void Clear() => _storage.Clear();
 
         public Task CommitAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
         public Task LoadAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
         public void Remove(string key) => _storage.Remove(key);
+
         public void Set(string key, byte[] value) => _storage[key] = value;
+
         public bool TryGetValue(string key, out byte[] value) => _storage.TryGetValue(key, out value);
+
+        // Helper method to set integer values
+        public void SetInt32(string key, int value)
+        {
+            var bytes = BitConverter.GetBytes(value);
+            Set(key, bytes);
+        }
     }
 }

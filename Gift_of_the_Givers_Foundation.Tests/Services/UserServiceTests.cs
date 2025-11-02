@@ -7,7 +7,7 @@ using Gift_of_the_Givers_Foundation.Services;
 using System.Threading.Tasks; // For async/await programming
 using System.Linq; // For  LINQ operations (AsQueryable)
 
-namespace Gift_of_the_Givers_Foundation.Tests;
+namespace Gift_of_the_Givers_Foundation.Tests.Services;
 
 public class UserServiceTests
 {
@@ -19,7 +19,7 @@ public class UserServiceTests
     public UserServiceTests()
     {
         //Create in-memory database options (fake database for testing)
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>() 
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: "TestDatabase") // Create a temporary in-memory database
             .Options;
 
@@ -55,7 +55,7 @@ public class UserServiceTests
         _mockContext.Setup(m => m.SaveChangesAsync(default)).ReturnsAsync(1);
 
         // Act: do something with the object that you are testing
-        var result = await _userService.RegisterUserAsunc(user, password);
+        var result = await _userService.RegisterUserAsync(user, password);
 
         // Assert: check that the expected behavior occurred
         Assert.NotNull(result);// Check that I got user object back(not null)
@@ -139,12 +139,13 @@ public class UserServiceTests
         _mockContext.Setup(m => m.Users).Returns(mockSet.Object);
 
         // Act
-        var result = await _userService.UserExistAsync(email); 
+        var result = await _userService.UserExistsAsync(email);
 
         // Assert
         Assert.True(result); //Should return true since user exists
-        
+
         // TEST SUMMARY:
         // I tested that UserExistsAsync correctly identifies when a user email already exists
         // This is important for preventing duplicate registrations
     }
+} 

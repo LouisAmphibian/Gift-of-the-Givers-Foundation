@@ -72,7 +72,7 @@ namespace Gift_of_the_Givers_Foundation.Tests.Controllers
             var servicesProviderMock = new Mock<IServiceProvider>();
             servicesProviderMock
                 .Setup(_ => _.GetService(typeof(IAuthenticationService))) // "When asked for IAuthenticationService"
-                .Returns(authServices.Object); // "return my fake authentication service"
+                .Returns(authServiceMock.Object); // "return my fake authentication service"
 
 
             //Tell the controller to use my fake service provider
@@ -126,12 +126,12 @@ namespace Gift_of_the_Givers_Foundation.Tests.Controllers
             var servicesProviderMock = new Mock<IServiceProvider>();
             servicesProviderMock
                 .Setup(_ => _.GetService(typeof(IAuthenticationService)))
-                .Returns(authServices.Object);
+                .Returns(authServiceMock.Object);
 
             _accountController.ControllerContext.HttpContext.RequestServices = servicesProviderMock.Object;
 
             // Act
-            var result = await _accountController.Register("Jane", "Doe", "new@example.com", "password", "Donor");
+            var result = await _accountController.Register("Jane", "Doe", "new@example.com", "password", "password", "Donor");
 
 
             // Assert
