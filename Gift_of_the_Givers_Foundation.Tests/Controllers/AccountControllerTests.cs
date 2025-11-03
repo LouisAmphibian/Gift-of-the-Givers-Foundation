@@ -21,18 +21,13 @@ namespace Gift_of_the_Givers_Foundation.Tests.Controllers
         // Constructor - runs before each test
         public AccountControllerTests()
         {
-            //Create a mock/fake user service
-            _mockUserService = new Mock<IUserService>();
-
-            //Create the real controller, injecting the fake user service
-            //This isolates the controller for testing
-            _accountController = new AccountController(_mockUserService.Object);
-
-            // Mock HttpContext for authentication
             var httpContext = new DefaultHttpContext();
-            _accountController.ControllerContext = new ControllerContext
+            var tempDataProvider = new Mock<ITempDataProvider>();
+            var tempData = new TempDataDictionary(httpContext, tempDataProvider.Object);
+
+            _controller = new AccountController(mockUserService.Object)
             {
-                HttpContext = httpContext
+                TempData = tempData
             };
         }
 

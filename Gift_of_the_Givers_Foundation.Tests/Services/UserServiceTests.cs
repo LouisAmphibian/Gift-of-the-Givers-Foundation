@@ -12,7 +12,7 @@ namespace Gift_of_the_Givers_Foundation.Tests.Services;
 public class UserServiceTests
 {
     // Mocks - fake versions of my dependencies
-    private readonly Mock<ApplicationDbContext> _mockContext; //fake database context
+    private readonly ApplicationDbContext _context; //fake database context
     private readonly UserService _userService; //The Real service I'm testing
 
     // Constructor
@@ -20,15 +20,15 @@ public class UserServiceTests
     {
         //Create in-memory database options (fake database for testing)
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: "TestDatabase") // Create a temporary in-memory database
-            .Options;
+          .UseInMemoryDatabase(databaseName: "UserServiceTests")
+          .Options;
 
         //Create a mock/fake database context with the in-memory options
-        _mockContext = new Mock<ApplicationDbContext>(options);
+        _context = new ApplicationDbContext(options);
 
         //Create REAL UserService but inject the FAKE database context
         //This isolates the service for testing without touching a real database
-        _userService = new UserService(_mockContext.Object);
+        _userService = new UserService(_context);
     }
 
     [Fact]
@@ -46,13 +46,6 @@ public class UserServiceTests
         };
 
         var password = "Password123";
-
-        //CREATE a mock DbSet (fake database table for Users)
-        var mockSet = new Mock<DbSet<User>>();
-        //SETUP: "When the context.Users property is accessed, return a mock DbSet"
-        _mockContext.Setup(m => m.Users).Returns(mockSet.Object);
-        //SETUP: "When SaveChangesAsync is called, return 1 (simulating 1 record saved)"
-        _mockContext.Setup(m => m.SaveChangesAsync(default)).ReturnsAsync(1);
 
         // Act: do something with the object that you are testing
         var result = await _userService.RegisterUserAsync(user, password);
@@ -77,34 +70,20 @@ public class UserServiceTests
         // Arrange
         var email = "test@example.com";
         var password = "Password123";
-        var passwordHash = BCrypt.Net.BCrypt.HashPassword(password); // Hash the test password
+        var hashed = BCrypt.Net.BCrypt.HashPassword(password); // Hash the test password
 
 
         // Create a test user with the hashed password that would exist in the database
-        var user = new User
+        _context.Users.Add(new User
         {
-            UserID = 1,
             Email = email,
-            PasswordHash = passwordHash,
+            PasswordHash = hashed,
             FirstName = "Test",
             LastName = "User",
             Role = "Donor"
-        };
+        });
+        await _context.SaveChangesAsync();
 
-        //Create fake database data - a list with the test user
-        var data = new List<User> { user }.AsQueryable(); // Convert to IQueryable for EF
-        // Create a mock DbSet (FAKE Users table)
-        var mockSet = new Mock<DbSet<User>>();
-
-        //SETUP the mock DbSet to behave like a real DbSet:
-        //These lines make the mock DbSet work with LINQ queries
-        mockSet.As<IQueryable<User>>().Setup(m => m.Provider).Returns(data.Provider);
-        mockSet.As<IQueryable<User>>().Setup(m => m.Expression).Returns(data.Expression);
-        mockSet.As<IQueryable<User>>().Setup(m => m.ElementType).Returns(data.ElementType);
-        mockSet.As<IQueryable<User>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-
-        //SETUP: "When the context.Users property is accessed, return our mock DbSet with test data"
-        _mockContext.Setup(m => m.Users).Returns(mockSet.Object);
 
         // Act
         var result = await _userService.AuthenticateUserAsync(email, password);
@@ -123,20 +102,8 @@ public class UserServiceTests
     {
         // Arrange
         var email = "existing@example.com";
-        var user = new User { Email = email };
-
-        //Create fake database data
-        var data = new List<User> { user }.AsQueryable();
-        var mockSet = new Mock<DbSet<User>>();
-
-        //SETUP mock DbSet LINQ behavior (same as previous test)
-        mockSet.As<IQueryable<User>>().Setup(m => m.Provider).Returns(data.Provider);
-        mockSet.As<IQueryable<User>>().Setup(m => m.Expression).Returns(data.Expression);
-        mockSet.As<IQueryable<User>>().Setup(m => m.ElementType).Returns(data.ElementType);
-        mockSet.As<IQueryable<User>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
-
-        //SETUP: "When the context.Users property is accessed, return our mock DbSet with test data"
-        _mockContext.Setup(m => m.Users).Returns(mockSet.Object);
+        _context.Users.Add(new User { Email = email });
+        await _context.SaveChangesAsync();
 
         // Act
         var result = await _userService.UserExistsAsync(email);
