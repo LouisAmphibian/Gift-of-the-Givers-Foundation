@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Gift_of_the_Givers_Foundation.Controllers;
 using Gift_of_the_Givers_Foundation.Models;
 using Gift_of_the_Givers_Foundation.Services;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Gift_of_the_Givers_Foundation.Tests.Controllers
 {
@@ -21,11 +22,13 @@ namespace Gift_of_the_Givers_Foundation.Tests.Controllers
         // Constructor - runs before each test
         public AccountControllerTests()
         {
+            _mockUserService = new Mock<IUserService>();
+
             var httpContext = new DefaultHttpContext();
             var tempDataProvider = new Mock<ITempDataProvider>();
             var tempData = new TempDataDictionary(httpContext, tempDataProvider.Object);
 
-            _controller = new AccountController(mockUserService.Object)
+            _accountController = new AccountController(_mockUserService.Object)
             {
                 TempData = tempData
             };
